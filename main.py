@@ -67,9 +67,8 @@ state = {
 shouldToggleMenuMode = True
 shouldSkipRelease = False
 
-def scaleColors(now, colors):
+def scaleColors(now, colors, duration = 1000):
 
-    duration = 1000
     half = duration / 2
 
     timeElapsedMs = int((now - state['lastKeypress']) * 1000) % duration
@@ -124,16 +123,11 @@ while True:
         shouldToggleMenuMode = True
         shouldSkipRelease = False
 
-    pixel.fill(state['currentColor'])
+    if touch.value and not state['isTouched']:
+        state['currentColor'] = (64, 0, 255)
+        state['isTouched'] = True
+    if not touch.value and state['isTouched']:
+        state['currentColor'] = modes[state['mode']]['color']
+        state['isTouched'] = False
 
-    # if touch.value and not state['isTouched']:
-    #     state['currentColor'] = (0, 255, 0)
-    #     state['isTouched'] = True
-    # if not touch.value and state['isTouched']:
-    #     state['currentColor'] = (0, 255, 255)
-    #     if isinstance(PASSWORDS[1], (list, tuple)) and isinstance(PASSWORDS[1][0], dict):
-    #         for k in PASSWORDS[1]:
-    #             make_keystrokes(k['keys'], k['delay'])
-    #     else:
-    #         make_keystrokes(PASSWORDS[1], delay=0)
-    #     state['isTouched'] = False
+    pixel.fill(state['currentColor'])
